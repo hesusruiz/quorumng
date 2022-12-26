@@ -109,6 +109,18 @@ func (v *BlockValidator) ValidateState(block *types.Block, statedb *state.StateD
 // ceil if the blocks are full. If the ceil is exceeded, it will always decrease
 // the gas allowance.
 func CalcGasLimit(parent *types.Block, minGasLimit, gasFloor, gasCeil uint64) uint64 {
+	// JRM-Disable dynamic GasLimit calculation.
+	// In a Public/Permissioned network like Alastria we do not want dynamic gas limits.
+	// Blocks are generated at a fixed period if there are not enough transactions (including no transactions at all).
+	// If there are many transactions, the block is generated immediately even if the block period has not expired.
+	// We want to have a very predictive cost of executing all txs in blocks, so we set a fixed gas.
+	// For the moment this is hardcoded, but it will be configurable in the future
+
+	// Check if we are past the fork block number in the RedT network
+	if parent.NumberU64() >= params.AlastriaGasLimitBlockNumber-1 {
+		return params.AlastriaGasLimit
+	}
+
 	// contrib = (parentGasUsed * 3 / 2) / 4096
 	contrib := (parent.GasUsed() + parent.GasUsed()/2) / params.GasLimitBoundDivisor
 

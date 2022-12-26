@@ -156,10 +156,12 @@ func (e *Engine) verifyCascadingFields(chain consensus.ChainHeaderReader, header
 		return consensus.ErrUnknownAncestor
 	}
 
-	// Ensure that the block's timestamp isn't too close to it's parent
-	if parent.Time+e.cfg.GetConfig(header.Number).BlockPeriod > header.Time {
-		return istanbulcommon.ErrInvalidTimestamp
-	}
+	// JRM-Increment Alastria BlockPeriod
+	// This check has to be temporarily disabled to permit that each Validator can modify the blockperiod individually
+	// // Ensure that the block's timestamp isn't too close to it's parent
+	// if parent.Time+e.cfg.GetConfig(header.Number).BlockPeriod > header.Time {
+	// 	return istanbulcommon.ErrInvalidTimestamp
+	// }
 
 	// Verify signer
 	if err := e.verifySigner(chain, header, parents, validators); err != nil {
@@ -277,8 +279,10 @@ func (e *Engine) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	// use the same difficulty for all blocks
 	header.Difficulty = istanbulcommon.DefaultDifficulty
 
+	// JRM-Increment Alastria BlockPeriod
 	// set header's timestamp
-	header.Time = parent.Time + e.cfg.GetConfig(header.Number).BlockPeriod
+	// header.Time = parent.Time + e.cfg.GetConfig(header.Number).BlockPeriod
+	header.Time = parent.Time + params.AlastriaBlockPeriod
 	if header.Time < uint64(time.Now().Unix()) {
 		header.Time = uint64(time.Now().Unix())
 	}

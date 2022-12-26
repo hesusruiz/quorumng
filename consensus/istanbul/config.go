@@ -18,7 +18,6 @@ package istanbul
 
 import (
 	"math/big"
-	"strings"
 	"sync"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -162,26 +161,29 @@ func (c Config) QBFTBlockNumber() int64 {
 
 // IsQBFTConsensusAt checks if qbft consensus is enabled for the block height identified by the given header
 func (c *Config) IsQBFTConsensusAt(blockNumber *big.Int) bool {
-	if c.TestQBFTBlock != nil {
-		if c.TestQBFTBlock.Uint64() == 0 {
-			return true
-		}
+	// JRM-QBFT Consensus disable
+	// Temporary: to make sure that QBFT is disabled
+	return false
+	// if c.TestQBFTBlock != nil {
+	// 	if c.TestQBFTBlock.Uint64() == 0 {
+	// 		return true
+	// 	}
 
-		if blockNumber.Cmp(c.TestQBFTBlock) >= 0 {
-			return true
-		}
-	}
-	result := false
-	if blockNumber == nil {
-		blockNumber = big.NewInt(0)
-	}
-	c.getTransitionValue(blockNumber, func(t params.Transition) {
-		if strings.EqualFold(t.Algorithm, params.QBFT) {
-			result = true
-		}
-	})
+	// 	if blockNumber.Cmp(c.TestQBFTBlock) >= 0 {
+	// 		return true
+	// 	}
+	// }
+	// result := false
+	// if blockNumber == nil {
+	// 	blockNumber = big.NewInt(0)
+	// }
+	// c.getTransitionValue(blockNumber, func(t params.Transition) {
+	// 	if strings.EqualFold(t.Algorithm, params.QBFT) {
+	// 		result = true
+	// 	}
+	// })
 
-	return result
+	// return result
 }
 
 func (c Config) GetConfig(blockNumber *big.Int) Config {

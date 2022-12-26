@@ -17,6 +17,21 @@ geth:
 	@echo "Done building."
 	@echo "Run \"$(GOBIN)/geth\" to launch geth."
 
+aladocker:
+	docker build -f Dockerfile.alastria -t hesusruiz/alagethng:v1.0 .
+	docker tag hesusruiz/alagethng:v1.0 hesusruiz/alagethng:latest
+
+alageth:
+	mkdir -p build/bin
+	docker run --rm hesusruiz/alagethng cat /geth >build/bin/geth
+	chmod +x build/bin/geth
+	docker run --rm hesusruiz/alagethng cat /newnodekey >build/bin/newnodekey
+	chmod +x build/bin/newnodekey
+
+newnodekey:
+	$(GORUN) build/ci.go install ./cmd/newnodekey
+	@echo "Done building."
+
 bootnode:
 	$(GORUN) build/ci.go install ./cmd/bootnode
 	@echo "Done building."
