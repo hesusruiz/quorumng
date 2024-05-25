@@ -18,8 +18,8 @@ geth:
 	@echo "Run \"$(GOBIN)/geth\" to launch geth."
 
 aladocker:
-	docker build -f Dockerfile.alastria -t hesusruiz/alagethng:v1.0 .
-	docker tag hesusruiz/alagethng:v1.0 hesusruiz/alagethng:latest
+	docker build -f Dockerfile.alastria -t hesusruiz/alagethng:v1.04 .
+	docker tag hesusruiz/alagethng:v1.04 hesusruiz/alagethng:latest
 
 alageth:
 	mkdir -p build/bin

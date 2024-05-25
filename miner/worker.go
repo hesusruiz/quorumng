@@ -915,6 +915,13 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 		if tx == nil {
 			break
 		}
+		// Alastria: do not mine transactions requesting more than 10M of gas, so one tx does not fill the block (30M)
+		if tx.Gas() > 10_000_000 {
+			log.Warn("Tx not mined (gas > 10M)", "gas", tx.Gas())
+			txs.Pop()
+			continue
+		}
+
 		// Error may be ignored here. The error has already been checked
 		// during transaction acceptance is the transaction pool.
 		//
